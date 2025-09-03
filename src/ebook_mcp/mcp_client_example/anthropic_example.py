@@ -14,9 +14,26 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configure logging
-log_dir = "logs"
-if not os.path.exists(log_dir):
-    os.makedirs(log_dir)
+def get_log_directory():
+    """Get a writable directory for logs."""
+    from pathlib import Path
+    import tempfile
+
+    # Try user's home directory first
+    home_dir = Path.home()
+    log_dir = home_dir / ".ebook-mcp" / "logs"
+
+    try:
+        log_dir.mkdir(parents=True, exist_ok=True)
+        return str(log_dir)
+    except (OSError, PermissionError):
+        # Fallback to system temp directory
+        temp_dir = Path(tempfile.gettempdir()) / "ebook-mcp" / "logs"
+        temp_dir.mkdir(parents=True, exist_ok=True)
+        return str(temp_dir)
+
+
+log_dir = get_log_directory()
 
 log_file = os.path.join(log_dir, f"anthropic_mcp_client_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log")
 logging.basicConfig(

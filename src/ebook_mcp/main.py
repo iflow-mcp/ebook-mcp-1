@@ -9,6 +9,8 @@ from ebook_mcp.tools import epub_helper, pdf_helper
 import logging
 from datetime import datetime
 from ebook_mcp.tools.logger_config import setup_logger  # Import logger config
+import tempfile
+from pathlib import Path
 
 # Type variable for generic function return type
 T = TypeVar('T')
@@ -49,9 +51,26 @@ def handle_pdf_errors(func: Callable[..., T]) -> Callable[..., T]:
     return wrapper
 
 
-log_dir = "logs"
-if not os.path.exists(log_dir):
-    os.makedirs(log_dir)
+def get_log_directory():
+    """Get a writable directory for logs."""
+    from pathlib import Path
+    import tempfile
+
+    # Try user's home directory first
+    home_dir = Path.home()
+    log_dir = home_dir / ".ebook-mcp" / "logs"
+
+    try:
+        log_dir.mkdir(parents=True, exist_ok=True)
+        return str(log_dir)
+    except (OSError, PermissionError):
+        # Fallback to system temp directory
+        temp_dir = Path(tempfile.gettempdir()) / "ebook-mcp" / "logs"
+        temp_dir.mkdir(parents=True, exist_ok=True)
+        return str(temp_dir)
+
+
+log_dir = get_log_directory()
 
 log_file = os.path.join(log_dir, f"ebook-mcp_server_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log")
 logging.basicConfig(

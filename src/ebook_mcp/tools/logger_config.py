@@ -96,8 +96,25 @@ def setup_logger(level: str = "INFO", log_file: str = "ebook_mcp.log"):
     """Configure structured logging system"""
     
     # Create logs directory if it doesn't exist
-    log_dir = os.path.join(os.path.dirname(__file__), "..", "logs")
-    os.makedirs(log_dir, exist_ok=True)
+    def get_log_directory():
+        """Get a writable directory for logs."""
+        from pathlib import Path
+        import tempfile
+
+        # Try user's home directory first
+        home_dir = Path.home()
+        log_dir = home_dir / ".ebook-mcp" / "logs"
+
+        try:
+            log_dir.mkdir(parents=True, exist_ok=True)
+            return str(log_dir)
+        except (OSError, PermissionError):
+            # Fallback to system temp directory
+            temp_dir = Path(tempfile.gettempdir()) / "ebook-mcp" / "logs"
+            temp_dir.mkdir(parents=True, exist_ok=True)
+            return str(temp_dir)
+
+    log_dir = get_log_directory()
     
     log_file_path = os.path.join(log_dir, log_file)
     
