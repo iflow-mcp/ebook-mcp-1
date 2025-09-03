@@ -238,6 +238,6 @@ if __name__ == "__main__":
 def cli_entry():
     import logging
     logging.info("Starting ebook-mcp server")
-    from mcp.server.fastmcp import FastMCP
-    mcp = FastMCP("ebook-mcp")
+    
+    # Use the global mcp instance that has all tools registered
     mcp.run(transport='stdio')
