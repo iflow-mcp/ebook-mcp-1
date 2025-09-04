@@ -1,7 +1,7 @@
 ## Here's my code: 
 [project]
 name = "iflow-mcp_ebook-mcp"
-version = "0.1.10"
+version = "0.1.11"
 description = "An MCP server for chatting with ebooks (PDF/EPUB)."
 authors = [{ name = "onebird", email = "rymrocks@163.com" }]
 license = "Apache-2.0"

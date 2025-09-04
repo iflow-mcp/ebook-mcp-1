@@ -79,8 +79,8 @@ def get_meta(pdf_path: str) -> Dict[str, Union[str, List[str]]]:
                 meta[field] = metadata[pdf_field]
 
         # Add additional information
-        meta['pages'] = doc.page_count
-        meta['file_size'] = os.path.getsize(pdf_path)
+        meta['pages'] = str(doc.page_count)
+        meta['file_size'] = str(os.path.getsize(pdf_path))
         
         # Get PDF version and encryption info
         try:
@@ -94,15 +94,15 @@ def get_meta(pdf_path: str) -> Dict[str, Union[str, List[str]]]:
         except:
             meta['pdf_version'] = "Unknown"
         
-        meta['is_encrypted'] = doc.is_encrypted
+        meta['is_encrypted'] = str(doc.is_encrypted)
         
         # Get page dimensions (first page)
         if doc.page_count > 0:
             try:
                 first_page = doc[0]
                 rect = first_page.rect
-                meta['page_width'] = rect.width
-                meta['page_height'] = rect.height
+                meta['page_width'] = str(rect.width)
+                meta['page_height'] = str(rect.height)
             except:
                 # If we can't get page dimensions, skip it
                 pass
